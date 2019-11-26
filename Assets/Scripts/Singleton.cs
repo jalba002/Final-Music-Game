@@ -14,6 +14,12 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     /// <summary>
     /// Access singleton instance through this propriety.
     /// </summary>
+    ///
+    private void Awake()
+    {
+        m_ShuttingDown = false;
+    }
+
     public static T Instance
     {
         get
