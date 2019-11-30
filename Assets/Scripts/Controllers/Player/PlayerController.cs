@@ -122,7 +122,7 @@ public class PlayerController : MonoBehaviour
         if (l_DiedOnce) return;
         Debug.Log("DEAD");
         rb2d.velocity = Vector2.zero;
-
+        GameController.Instance.GameOver();
         l_DiedOnce = true;
     }
 
