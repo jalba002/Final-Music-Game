@@ -28,8 +28,8 @@ public class GameController : Singleton<GameController>
         m_PlayerComponents = new PlayerComponents();
         m_PlayerComponents.m_PlayerController = m_PlayerGameObject.GetComponent<PlayerController>();
         m_PlayerDied = false;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
     }
 
     void Update()
@@ -41,6 +41,9 @@ public class GameController : Singleton<GameController>
 
         if (Input.GetKeyDown(KeyCode.Escape) && !m_GamePaused && !m_PlayerDied)
             Pause();
+
+        if (Input.GetKeyDown(KeyCode.R))
+            Restart();
 
 #if UNITY_EDITOR
         if (Input.GetKeyDown(m_DebugLockKeyCode))
@@ -61,6 +64,11 @@ public class GameController : Singleton<GameController>
         Cursor.visible = true;
         Time.timeScale = 0;
         //m_CanvasManagerController.gameObject.SetActive(false);
+    }
+
+    public void Restart()
+    {
+        m_PlayerComponents.m_PlayerController.ResetGame();
     }
 
     public void GameOver()
