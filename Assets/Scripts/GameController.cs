@@ -15,13 +15,14 @@ public class GameController : Singleton<GameController>
     public PlayerComponents m_PlayerComponents;
     public GameObject m_PauseMenu;
     public GameObject m_GameOverMenu;
+    [Range(0.1f, 2f)] public float m_VerticalOffsetTime;
+    private CameraController m_Camera;
     [HideInInspector] public bool m_PlayerDied;
     [HideInInspector] public bool m_GamePaused;
+    bool m_ChangeLight;
     KeyCode m_DebugLockKeyCode = KeyCode.O;
 
-
-
-    void Start()
+    void Awake()
     {
         m_GamePaused = false;
         m_PlayerGameObject = FindObjectOfType<PlayerController>().gameObject;
@@ -30,6 +31,7 @@ public class GameController : Singleton<GameController>
         m_PlayerDied = false;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        m_Camera = FindObjectOfType<CameraController>();
     }
 
     void Update()
@@ -37,6 +39,13 @@ public class GameController : Singleton<GameController>
         if (Input.GetKeyDown(KeyCode.E))
         {
             m_PlayerComponents.m_PlayerController.m_GravityDirection *= -1;
+            m_Camera.SetVerticalOffset(m_VerticalOffsetTime);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            m_ChangeLight = !m_ChangeLight;
+            m_Camera.LightInterepolation(m_ChangeLight);
         }
 
         if (Input.GetKeyDown(KeyCode.Escape) && !m_GamePaused && !m_PlayerDied)

@@ -8,6 +8,9 @@ public class CameraController : MonoBehaviour
     [Range(0.01f, 0.1f)] public float smoothTime;
     [Range(0.01f, 5f)] public float m_VerticalOffset;
 
+    //CameraLight
+    [HideInInspector] public Light cameraLight;
+
     //CameraShake
     private float shakeAmount = 0;
 
@@ -15,6 +18,8 @@ public class CameraController : MonoBehaviour
     private void Start()
     {
         m_Target = GameObject.FindGameObjectWithTag("Player").transform;
+        cameraLight = GetComponentInChildren<Light>();
+        cameraLight.range = 20.0f;
     }
 
     void Update()
@@ -52,8 +57,74 @@ public class CameraController : MonoBehaviour
         CancelInvoke("BeginShake");
     }
 
-    public void SetVerticalOffset()
+    public void SetVerticalOffset(float time)
+    {
+        Invoke("SetVerticalOffsetDelay", time);
+    }
+
+    public void SetVerticalOffsetDelay()
     {
         m_VerticalOffset *= -1;
+    }
+
+    public void LightInterepolation(bool ReduceLight)
+    {
+        StartCoroutine(LightInterpolationPlayer(!ReduceLight));
+        StartCoroutine(LightInterpolation(ReduceLight));
+    }
+
+    IEnumerator LightInterpolation(bool ReduceLight)
+    {
+        yield return new WaitForSeconds(Time.deltaTime * 0.2f);
+
+        if (!ReduceLight)
+        {
+
+            if (cameraLight.range >= 20.0f)
+                yield return 0;
+            else
+            {
+                cameraLight.range += 0.4f;
+                StartCoroutine(LightInterpolation(ReduceLight));
+            }
+        }
+        else
+        {
+            if (cameraLight.range <= 0.0f)
+                yield return 0;
+            else
+            {
+                cameraLight.range -= 0.4f;
+                StartCoroutine(LightInterpolation(ReduceLight));
+            }
+        }
+    }
+
+    IEnumerator LightInterpolationPlayer(bool ReduceLight)
+    {
+     
+        yield return new WaitForSeconds(Time.deltaTime * 0.1f);
+
+        if (!ReduceLight)
+        {
+
+            if (GameController.Instance.m_PlayerComponents.m_PlayerController.cameraLight.range >= 8.0f)
+                yield return 0;
+            else
+            {
+                GameController.Instance.m_PlayerComponents.m_PlayerController.cameraLight.range += 0.2f;
+                StartCoroutine(LightInterpolationPlayer(ReduceLight));
+            }
+        }
+        else
+        {
+            if (GameController.Instance.m_PlayerComponents.m_PlayerController.cameraLight.range <= 0.0f)
+                yield return 0;
+            else
+            {
+                GameController.Instance.m_PlayerComponents.m_PlayerController.cameraLight.range -= 0.2f;
+                StartCoroutine(LightInterpolationPlayer(ReduceLight));
+            }
+        }
     }
 }

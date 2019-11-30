@@ -60,13 +60,12 @@ public class PauseMenu : MonoBehaviour
         //GameManager.Instance.m_CanvasManagerController.gameObject.SetActive(true);
         //GameManager.Instance.m_CanvasManagerController.m_textToDisplayAnim.SetActive(false);
         GameController.Instance.m_GamePaused = false;
-
     }
 
     public void Restart()
     {
         Time.timeScale = 1;
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void Quit()
