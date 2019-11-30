@@ -21,6 +21,11 @@ public class GameController : Singleton<GameController>
     [HideInInspector] public bool m_GamePaused;
     bool m_ChangeLight;
     KeyCode m_DebugLockKeyCode = KeyCode.O;
+    int m_CDTimer;
+    public CanvasManager m_CanvasManagerController;
+    [HideInInspector] public bool m_gameStart;
+    [HideInInspector] public bool m_allowRestart;
+    public Animator BlackFadeOut;
 
     void Awake()
     {
@@ -32,7 +37,9 @@ public class GameController : Singleton<GameController>
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         m_Camera = FindObjectOfType<CameraController>();
-    
+        m_CDTimer = 3;
+        StartCoroutine(CountDownToStart());
+        BlackFadeOut.Play("BlackFadeOut");
     }
 
     void Update()
@@ -48,7 +55,7 @@ public class GameController : Singleton<GameController>
             m_Camera.LightInterepolation(m_ChangeLight);
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape) && !m_GamePaused && !m_PlayerDied)
+        if (Input.GetKeyDown(KeyCode.Escape) && !m_GamePaused && !m_PlayerDied && m_allowRestart)
             Pause();
 
         if (Input.GetKeyDown(KeyCode.R))
@@ -72,12 +79,18 @@ public class GameController : Singleton<GameController>
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         Time.timeScale = 0;
-        //m_CanvasManagerController.gameObject.SetActive(false);
     }
 
     public void Restart()
     {
+        m_gameStart = m_allowRestart = false;
         m_PlayerComponents.m_PlayerController.ResetGame();
+        m_CDTimer = 3;
+        StartCoroutine(CountDownToStart());
+        Cursor.visible = false;
+        m_CanvasManagerController.m_GameScore = 0.0f;
+        m_CanvasManagerController.CanvasScore();
+        BlackFadeOut.Play("BlackFadeOut");
     }
 
     public void GameOver()
@@ -88,5 +101,28 @@ public class GameController : Singleton<GameController>
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         Time.timeScale = 0;
+    }
+
+    IEnumerator CountDownToStart()
+    {
+        while (m_CDTimer > 0)
+        {
+            m_CanvasManagerController.m_CoutDownTimerText.gameObject.SetActive(true);
+            m_CanvasManagerController.m_CoutDownTimerText.text = m_CDTimer.ToString();
+            yield return new WaitForSeconds(1f);
+            m_CDTimer--;
+        }
+
+        m_CanvasManagerController.m_CoutDownTimerText.text = "GO!";
+
+        m_gameStart = true;
+        yield return new WaitForSeconds(1f); // un segundo después de empezar el evento te permite iniciarlo de nuevo
+        m_CanvasManagerController.m_CoutDownTimerText.gameObject.SetActive(false);
+        AllowRestartGame();
+    }
+
+    void AllowRestartGame()
+    {
+        m_allowRestart = true;
     }
 }

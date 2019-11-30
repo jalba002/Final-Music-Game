@@ -97,11 +97,11 @@ public class CameraController : MonoBehaviour
         if (!ReduceLight)
         {
 
-            if (GameController.Instance.m_PlayerComponents.m_PlayerController.cameraLight.range >= 8.0f)
+            if (GameController.Instance.m_PlayerComponents.m_PlayerController.cameraLight.range >= 15.0f) //love hardcoding!
                 yield return 0;
             else
             {
-                GameController.Instance.m_PlayerComponents.m_PlayerController.cameraLight.range += 0.2f;
+                GameController.Instance.m_PlayerComponents.m_PlayerController.cameraLight.range += 0.4f;
                 StartCoroutine(LightInterpolationPlayer(ReduceLight));
             }
         }
@@ -111,7 +111,7 @@ public class CameraController : MonoBehaviour
                 yield return 0;
             else
             {
-                GameController.Instance.m_PlayerComponents.m_PlayerController.cameraLight.range -= 0.2f;
+                GameController.Instance.m_PlayerComponents.m_PlayerController.cameraLight.range -= 0.4f;
                 StartCoroutine(LightInterpolationPlayer(ReduceLight));
             }
         }

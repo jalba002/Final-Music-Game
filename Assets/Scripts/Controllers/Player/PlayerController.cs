@@ -57,12 +57,14 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        CaptureControls();
-        Act();
-        Moving();
-        if (m_JumpTimer > 0f) m_JumpTimer -= Time.deltaTime;
+        if (GameController.Instance.m_gameStart)
+        {
+            CaptureControls();
+            Act();
+            Moving();
+            if (m_JumpTimer > 0f) m_JumpTimer -= Time.deltaTime;
+        }
     }
-
 
     void Act()
     {
@@ -77,7 +79,6 @@ public class PlayerController : MonoBehaviour
                 //show errors
                 break;
         }
-
     }
 
     void Moving()
@@ -85,7 +86,7 @@ public class PlayerController : MonoBehaviour
         if (m_CurrentState == state.DEATH)
             return;
 
-        if((!m_Jumping && m_PlayerControls.m_Jumping) || (m_PlayerControls.m_ContinuousJumping && m_JumpedOnce))
+        if ((!m_Jumping && m_PlayerControls.m_Jumping) || (m_PlayerControls.m_ContinuousJumping && m_JumpedOnce))
         {
             if (m_JumpTimer < 0f)
             {
@@ -110,12 +111,10 @@ public class PlayerController : MonoBehaviour
             m_JumpTimer = 0f;
         }
 
-
         rb2d.AddForce(m_GravityDirection * m_Gravity, ForceMode2D.Force);
         rb2d.velocity = new Vector2(Mathf.Clamp(m_MovementSpeed, 0f, m_MaxVelocity), rb2d.velocity.y);
 
     }
-
 
     void Death()
     {
