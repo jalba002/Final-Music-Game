@@ -40,7 +40,6 @@ public class GameController : Singleton<GameController>
         if (Input.GetKeyDown(KeyCode.E))
         {
             m_PlayerComponents.m_PlayerController.m_GravityDirection *= -1;
-            m_Camera.SetVerticalOffset(m_VerticalOffsetTime);
         }
 
         if (Input.GetKeyDown(KeyCode.Q))

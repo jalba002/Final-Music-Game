@@ -56,12 +56,6 @@ public class CameraController : MonoBehaviour
         CancelInvoke("BeginShake");
     }
 
-    public void SetVerticalOffset(float time)
-    {
-        Invoke("SetVerticalOffsetDelay", time);
-    }
-
-
     public void LightInterepolation(bool ReduceLight)
     {
         StartCoroutine(LightInterpolationPlayer(!ReduceLight));
