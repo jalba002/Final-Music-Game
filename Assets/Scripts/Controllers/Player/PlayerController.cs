@@ -7,39 +7,52 @@ public class PlayerController : MonoBehaviour
     [System.Serializable]
     public class Controls
     {
-        public bool m_Jumping;
+        [HideInInspector] public bool m_Jumping;
+        [HideInInspector] public bool m_ContinuousJumping;
 
     }
     public Controls m_PlayerControls;
 
-    public enum state { NONE, JUMPING, DEATH }
+    public enum state { ALIVE, DEATH }
 
     public state m_CurrentState;
     [Range(0.0f, 20.0f)] public float m_JumpingForce;
-    [Range(0.0f, 20.0f)] public float m_PlayerSpeed;
+
+    public float m_MovementSpeed;
+    public float m_MaxVelocity;
     public float m_Gravity;
+    public float m_MaxJumpDuration;
+
     public Collider2D m_TopCollider;
     public Collider2D m_BottomCollider;
-    public Vector2 m_GravityDirection = Vector2.down;
-    float m_CurrentSpeed;
     public CameraController m_Camera;
 
     //CameraLight
     [HideInInspector] public Light cameraLight;
 
 
-    Rigidbody2D m_Rb2d;
+
+    public Vector2 m_GravityDirection = Vector2.down;
+    public Vector2 m_OriginalPosition;
+
+    Rigidbody2D rb2d;
     bool m_Jumping;
+    bool l_DiedOnce;
+    bool m_JumpedOnce;
+    float m_JumpTimer;
 
     void Start()
     {
+        m_JumpTimer = 0f;
+        m_JumpedOnce = false;
+        l_DiedOnce = false;
         m_Jumping = false;
-        m_CurrentState = state.NONE;
+        m_CurrentState = state.ALIVE;
         m_PlayerControls = new Controls();
-        m_Rb2d = GetComponent<Rigidbody2D>();
-        m_CurrentSpeed = m_PlayerSpeed;
         cameraLight = GetComponentInChildren<Light>();
         cameraLight.range = 0f;
+        rb2d = GetComponent<Rigidbody2D>();
+        m_OriginalPosition = this.gameObject.transform.position;
     }
 
     void Update()
@@ -47,23 +60,15 @@ public class PlayerController : MonoBehaviour
         CaptureControls();
         Act();
         Moving();
+        if (m_JumpTimer > 0f) m_JumpTimer -= Time.deltaTime;
     }
 
-    private void FixedUpdate()
-    {
-        //m_Rb2d.MovePosition(m_Rb2d.position + Vector2.right * m_CurrentSpeed * Time.fixedDeltaTime);
-        m_Rb2d.transform.Translate(Vector2.right * m_CurrentSpeed * Time.fixedDeltaTime);
-        //m_Rb2d.AddForce(Vector2.right * 2 * m_CurrentSpeed, ForceMode2D.Force);
-    }
 
     void Act()
     {
         switch (m_CurrentState)
         {
-            case state.NONE:
-                break;
-            case state.JUMPING:
-                Jumping();
+            case state.ALIVE:
                 break;
             case state.DEATH:
                 Death();
@@ -72,6 +77,7 @@ public class PlayerController : MonoBehaviour
                 //show errors
                 break;
         }
+
     }
 
     void Moving()
@@ -79,33 +85,69 @@ public class PlayerController : MonoBehaviour
         if (m_CurrentState == state.DEATH)
             return;
 
-        m_Rb2d.AddForce(m_GravityDirection * m_Gravity, ForceMode2D.Force);
+        if((!m_Jumping && m_PlayerControls.m_Jumping) || (m_PlayerControls.m_ContinuousJumping && m_JumpedOnce))
+        {
+            if (m_JumpTimer < 0f)
+            {
+                m_JumpedOnce = false;
+                m_JumpTimer = 0f;
+            }
+            else if (m_PlayerControls.m_Jumping)
+            {
+                rb2d.AddForce(-m_GravityDirection * m_JumpingForce, ForceMode2D.Impulse);
+                m_JumpTimer = m_MaxJumpDuration;
+                m_JumpedOnce = true;
+                m_Jumping = true;
+            }
+            else if (m_PlayerControls.m_ContinuousJumping)
+            {
+                rb2d.AddForce(-m_GravityDirection * m_JumpingForce, ForceMode2D.Force);
+            }
+        }
+        else
+        {
+            m_JumpedOnce = false;
+            m_JumpTimer = 0f;
+        }
 
-        if (m_PlayerControls.m_Jumping)
-            m_CurrentState = state.JUMPING;
+
+        rb2d.AddForce(m_GravityDirection * m_Gravity, ForceMode2D.Force);
+        rb2d.velocity = new Vector2(Mathf.Clamp(m_MovementSpeed, 0f, m_MaxVelocity), rb2d.velocity.y);
 
     }
 
-    void Jumping()
-    {
-        if (!m_Jumping)
-            m_Rb2d.AddForce(-m_GravityDirection * m_JumpingForce, ForceMode2D.Impulse);
-
-        m_CurrentState = state.NONE;
-    }
 
     void Death()
     {
+        if (l_DiedOnce) return;
+        Debug.Log("DEAD");
+        rb2d.velocity = Vector2.zero;
 
+        l_DiedOnce = true;
     }
 
     void CaptureControls()
     {
         m_PlayerControls.m_Jumping = Input.GetButtonDown("Jump");
+        m_PlayerControls.m_ContinuousJumping = Input.GetButton("Jump");
     }
 
     public void SetOnGround(bool l_enable)
     {
-        m_Jumping = l_enable;
+        m_Jumping = !l_enable;
+    }
+
+    public void ResetGame()
+    {
+        this.gameObject.transform.position = m_OriginalPosition;
+
+        rb2d.velocity = Vector2.zero;
+
+        m_CurrentState = state.ALIVE;
+
+        m_JumpedOnce = false;
+        m_Jumping = false;
+        m_JumpTimer = 0f;
+        l_DiedOnce = false;
     }
 }

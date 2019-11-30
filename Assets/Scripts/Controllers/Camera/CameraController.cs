@@ -5,8 +5,8 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     private Transform m_Target;
-    [Range(0.01f, 0.1f)] public float smoothTime;
-    [Range(0.01f, 5f)] public float m_VerticalOffset;
+    public float smoothTime;
+    public Vector3 m_Offset;
 
     //CameraLight
     [HideInInspector] public Light cameraLight;
@@ -22,10 +22,9 @@ public class CameraController : MonoBehaviour
         cameraLight.range = 20.0f;
     }
 
-    void Update()
+    void LateUpdate()
     {
-        Vector3 smoothposition = Vector3.Lerp(transform.position, new Vector3(m_Target.transform.position.x, m_Target.transform.position.y + m_VerticalOffset, -10), smoothTime);
-        transform.position = smoothposition;
+        transform.position = new Vector3(m_Target.transform.position.x + m_Offset.x, m_Offset.y, -10);
     }
 
 
@@ -62,10 +61,6 @@ public class CameraController : MonoBehaviour
         Invoke("SetVerticalOffsetDelay", time);
     }
 
-    public void SetVerticalOffsetDelay()
-    {
-        m_VerticalOffset *= -1;
-    }
 
     public void LightInterepolation(bool ReduceLight)
     {
@@ -127,4 +122,5 @@ public class CameraController : MonoBehaviour
             }
         }
     }
+
 }
