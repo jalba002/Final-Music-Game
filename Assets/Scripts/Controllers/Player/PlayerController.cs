@@ -19,18 +19,20 @@ public class PlayerController : MonoBehaviour
     public float m_MovementSpeed;
     public float m_MaxVelocity;
     public float m_Gravity;
+
     public Collider2D m_TopCollider;
     public Collider2D m_BottomCollider;
 
     public Vector2 m_GravityDirection = Vector2.down;
-
     public Vector2 m_OriginalPosition;
 
     Rigidbody2D rb2d;
     bool m_Jumping;
+    bool l_DiedOnce;
 
     void Start()
     {
+        l_DiedOnce = false;
         m_Jumping = false;
         m_CurrentState = state.ALIVE;
         m_PlayerControls = new Controls();
@@ -62,11 +64,7 @@ public class PlayerController : MonoBehaviour
                 //show errors
                 break;
         }
-        if (!m_Jumping && m_PlayerControls.m_Jumping)
-        {
-            m_Jumping = true;
-            rb2d.AddForce(-m_GravityDirection * m_JumpingForce, ForceMode2D.Impulse);
-        }
+        
     }
 
     void Moving()
@@ -74,9 +72,14 @@ public class PlayerController : MonoBehaviour
         if (m_CurrentState == state.DEATH)
             return;
 
+        if (!m_Jumping && m_PlayerControls.m_Jumping)
+        {
+            m_Jumping = true;
+            rb2d.AddForce(-m_GravityDirection * m_JumpingForce, ForceMode2D.Impulse);
+        }
+
         rb2d.AddForce(m_GravityDirection * m_Gravity, ForceMode2D.Force);
-        rb2d.AddForce(Vector2.right * m_MovementSpeed, ForceMode2D.Impulse);
-        rb2d.velocity = Vector2.ClampMagnitude(rb2d.velocity, m_MaxVelocity);
+        rb2d.velocity = new Vector2(Mathf.Clamp(m_MovementSpeed, 0f, m_MaxVelocity), rb2d.velocity.y);
 
     }
 
@@ -87,7 +90,11 @@ public class PlayerController : MonoBehaviour
 
     void Death()
     {
+        if (l_DiedOnce) return;
+        Debug.Log("DEAD");
+        rb2d.velocity = Vector2.zero;
 
+        l_DiedOnce = true;
     }
 
     void CaptureControls()
@@ -103,6 +110,11 @@ public class PlayerController : MonoBehaviour
     public void ResetGame()
     {
         this.gameObject.transform.position = m_OriginalPosition;
+
         rb2d.velocity = Vector2.zero;
+
+        m_CurrentState = state.ALIVE;
+
+        l_DiedOnce = false;
     }
 }

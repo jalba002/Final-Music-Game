@@ -5,8 +5,8 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     private Transform m_Target;
-    [Range(0.01f, 0.1f)] public float smoothTime;
-    [Range(0.01f, 5f)] public float m_VerticalOffset;
+    public float smoothTime;
+    public Vector3 m_Offset;
 
     //CameraShake
     private float shakeAmount = 0;
@@ -17,10 +17,9 @@ public class CameraController : MonoBehaviour
         m_Target = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
-    void Update()
+    void LateUpdate()
     {
-        Vector3 smoothposition = Vector3.Lerp(transform.position, new Vector3(m_Target.transform.position.x, m_Target.transform.position.y + m_VerticalOffset, -10), smoothTime);
-        transform.position = smoothposition;
+        transform.position = new Vector3(m_Target.transform.position.x + m_Offset.x, m_Offset.y, -10);
     }
 
 
@@ -50,10 +49,5 @@ public class CameraController : MonoBehaviour
     void StopShake()
     {
         CancelInvoke("BeginShake");
-    }
-
-    public void SetVerticalOffset()
-    {
-        m_VerticalOffset *= -1;
     }
 }
