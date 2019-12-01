@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (GameController.Instance.m_gameStart && !GameController.Instance.m_GamePaused)
+        if (GameController.Instance.m_gameStart && !GameController.Instance.m_GamePaused && !GameController.Instance.m_EndGame)
         {
             CaptureControls();
             Act();

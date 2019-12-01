@@ -28,6 +28,7 @@ public class GameController : Singleton<GameController>
     [HideInInspector] public bool m_gameStart;
     [HideInInspector] public bool m_allowRestart;
     public Animator BlackFadeOut;
+    [HideInInspector] public bool m_EndGame;
 
 
     void Awake()
