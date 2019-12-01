@@ -44,6 +44,7 @@ public class PauseMenu : MonoBehaviour
     {
         Time.timeScale = 1;
         SceneManager.LoadScene("MainMenu");
+        AudioManager.instance.StopAllSounds();
     }
 
     public void PlayButtonSound()
@@ -57,9 +58,8 @@ public class PauseMenu : MonoBehaviour
         Cursor.visible = false;
         Time.timeScale = 1;
         gameObject.SetActive(false);
-        //GameManager.Instance.m_CanvasManagerController.gameObject.SetActive(true);
-        //GameManager.Instance.m_CanvasManagerController.m_textToDisplayAnim.SetActive(false);
         GameController.Instance.m_GamePaused = false;
+        AudioManager.instance.UnPause("FullSong");
     }
 
     public void Restart()

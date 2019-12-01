@@ -80,6 +80,7 @@ public class GameController : Singleton<GameController>
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         Time.timeScale = 0;
+        AudioManager.instance.Pause("FullSong");
     }
 
     public void Restart()
