@@ -40,7 +40,6 @@ public class GameController : Singleton<GameController>
         m_CDTimer = 3;
         StartCoroutine(CountDownToStart());
         BlackFadeOut.Play("BlackFadeOut");
-        AudioManager.instance.Play("FullSong");
     }
 
     void Update()
@@ -94,7 +93,6 @@ public class GameController : Singleton<GameController>
         m_CanvasManagerController.CanvasScore();
         BlackFadeOut.Play("BlackFadeOut");
         AudioManager.instance.StopAllSounds();
-        AudioManager.instance.Play("FullSong");
     }
 
     public void GameOver()
@@ -117,6 +115,7 @@ public class GameController : Singleton<GameController>
             m_CDTimer--;
         }
 
+        AudioManager.instance.Play("FullSong");
         m_CanvasManagerController.m_CoutDownTimerText.text = "GO!";
         m_gameStart = true;
         yield return new WaitForSeconds(1f); // un segundo después de empezar el evento te permite iniciarlo de nuevo
