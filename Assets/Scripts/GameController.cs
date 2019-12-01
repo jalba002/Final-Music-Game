@@ -89,15 +89,8 @@ public class GameController : Singleton<GameController>
     {
         if (m_HasGravity)
         {
-            m_PlayerComponents.m_PlayerController.m_GravityDirection *= -1;
+            m_PlayerComponents.m_PlayerController.m_GravityDirection = Vector2.down;
             m_HasGravity = false;
-        }
-
-        if (m_HasDLight)
-        {
-            m_ChangeLight = !m_ChangeLight;
-            m_Camera.LightInterepolation(m_ChangeLight);
-            m_HasDLight = false;
         }
 
         m_gameStart = m_allowRestart = false;
@@ -125,6 +118,14 @@ public class GameController : Singleton<GameController>
     {
         while (m_CDTimer > 0)
         {
+            if (m_CDTimer == 2)
+                if (m_HasDLight)
+                {
+                    m_ChangeLight = false;
+                    m_Camera.LightInterepolation(m_ChangeLight);
+                    m_HasDLight = false;
+                }
+
             m_CanvasManagerController.m_CoutDownTimerText.gameObject.SetActive(true);
             m_CanvasManagerController.m_CoutDownTimerText.text = m_CDTimer.ToString();
             yield return new WaitForSeconds(1f);

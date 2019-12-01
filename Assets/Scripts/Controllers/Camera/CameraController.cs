@@ -91,7 +91,6 @@ public class CameraController : MonoBehaviour
 
     IEnumerator LightInterpolationPlayer(bool ReduceLight)
     {
-     
         yield return new WaitForSeconds(Time.deltaTime * 0.1f);
 
         if (!ReduceLight)
@@ -116,5 +115,4 @@ public class CameraController : MonoBehaviour
             }
         }
     }
-
 }

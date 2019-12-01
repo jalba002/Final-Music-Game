@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     public float m_MovementSpeed;
     public float m_MaxVelocity;
     public float m_Gravity;
+    float m_CurrentGravity;
     public float m_MaxJumpDuration;
 
     public Collider2D m_TopCollider;
@@ -53,11 +54,12 @@ public class PlayerController : MonoBehaviour
         cameraLight.range = 0f;
         rb2d = GetComponent<Rigidbody2D>();
         m_OriginalPosition = this.gameObject.transform.position;
+        m_CurrentGravity = m_Gravity;
     }
 
     void Update()
     {
-        if (GameController.Instance.m_gameStart)
+        if (GameController.Instance.m_gameStart && !GameController.Instance.m_GamePaused)
         {
             CaptureControls();
             Act();
@@ -111,7 +113,7 @@ public class PlayerController : MonoBehaviour
             m_JumpTimer = 0f;
         }
 
-        rb2d.AddForce(m_GravityDirection * m_Gravity, ForceMode2D.Force);
+        rb2d.AddForce(m_GravityDirection * m_CurrentGravity, ForceMode2D.Force);
         rb2d.velocity = new Vector2(Mathf.Clamp(m_MovementSpeed, 0f, m_MaxVelocity), rb2d.velocity.y);
 
     }
@@ -141,6 +143,8 @@ public class PlayerController : MonoBehaviour
         this.gameObject.transform.position = m_OriginalPosition;
 
         rb2d.velocity = Vector2.zero;
+
+        rb2d.AddForce(Vector2.down * m_CurrentGravity, ForceMode2D.Impulse);
 
         m_CurrentState = state.ALIVE;
 
