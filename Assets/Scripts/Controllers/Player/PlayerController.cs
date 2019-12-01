@@ -23,10 +23,9 @@ public class PlayerController : MonoBehaviour
     public float m_Gravity;
     float m_CurrentGravity;
     public float m_MaxJumpDuration;
-
     public Collider2D m_TopCollider;
     public Collider2D m_BottomCollider;
-    public CameraController m_Camera;
+    public ParticleSystem playerDeath;
 
     //CameraLight
     [HideInInspector] public Light cameraLight;
@@ -120,11 +119,15 @@ public class PlayerController : MonoBehaviour
 
     void Death()
     {
+        gameObject.SetActive(false);
+        var p = Instantiate(playerDeath, transform.position, transform.rotation);
+        p.Play();
         if (l_DiedOnce) return;
         Debug.Log("DEAD");
         rb2d.velocity = Vector2.zero;
-        GameController.Instance.GameOver();
         l_DiedOnce = true;
+        Invoke("CallGameOver", 2f);
+        m_CurrentState = state.ALIVE;
     }
 
     void CaptureControls()
@@ -140,14 +143,12 @@ public class PlayerController : MonoBehaviour
 
     public void ResetGame()
     {
+        gameObject.SetActive(true);
         this.gameObject.transform.position = m_OriginalPosition;
 
         rb2d.velocity = Vector2.zero;
 
         rb2d.AddForce(Vector2.down * m_CurrentGravity, ForceMode2D.Impulse);
-
-        m_CurrentState = state.ALIVE;
-
         m_JumpedOnce = false;
         m_Jumping = false;
         m_JumpTimer = 0f;
@@ -162,5 +163,10 @@ public class PlayerController : MonoBehaviour
             ITakeItems l_Item = col.GetComponent<ITakeItems>();
             l_Item.TakeItem();
         }
+    }
+
+    void CallGameOver()
+    {
+        GameController.Instance.GameOver();
     }
 }
