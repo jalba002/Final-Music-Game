@@ -8,7 +8,6 @@ public class Parallax : MonoBehaviour
     public GameObject cam;
     public float parallaxEffect;
 
-
     void Start()
     {
         startpos = transform.position.x;
@@ -28,4 +27,10 @@ public class Parallax : MonoBehaviour
         else if (temp < startpos - lenght)
             startpos -= lenght;
     }
+
+    public void Restart()
+    {
+        this.gameObject.transform.localPosition = Vector3.zero;
+    }
+
 }
