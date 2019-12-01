@@ -103,6 +103,13 @@ public class GameController : Singleton<GameController>
         m_CanvasManagerController.CanvasScore();
         BlackFadeOut.Play("BlackFadeOut");
         AudioManager.instance.StopAllSounds();
+        AudioManager.instance.Play("FullSong");
+
+        Parallax[] l_ParallaxList = FindObjectsOfType<Parallax>();
+        foreach (Parallax Par in l_ParallaxList)
+        {
+            Par.Restart();
+        }
     }
 
     public void GameOver()
