@@ -16,16 +16,19 @@ public class GameController : Singleton<GameController>
     public GameObject m_PauseMenu;
     public GameObject m_GameOverMenu;
     [Range(0.1f, 2f)] public float m_VerticalOffsetTime;
-    private CameraController m_Camera;
+    [HideInInspector] public CameraController m_Camera;
     [HideInInspector] public bool m_PlayerDied;
     [HideInInspector] public bool m_GamePaused;
-    bool m_ChangeLight;
+    [HideInInspector] public bool m_ChangeLight;
+    [HideInInspector] public bool m_HasDLight;
+    [HideInInspector] public bool m_HasGravity;
     KeyCode m_DebugLockKeyCode = KeyCode.O;
     int m_CDTimer;
     public CanvasManager m_CanvasManagerController;
     [HideInInspector] public bool m_gameStart;
     [HideInInspector] public bool m_allowRestart;
     public Animator BlackFadeOut;
+
 
     void Awake()
     {
@@ -84,6 +87,19 @@ public class GameController : Singleton<GameController>
 
     public void Restart()
     {
+        if (m_HasGravity)
+        {
+            m_PlayerComponents.m_PlayerController.m_GravityDirection *= -1;
+            m_HasGravity = false;
+        }
+
+        if (m_HasDLight)
+        {
+            m_ChangeLight = !m_ChangeLight;
+            m_Camera.LightInterepolation(m_ChangeLight);
+            m_HasDLight = false;
+        }
+
         m_gameStart = m_allowRestart = false;
         m_PlayerComponents.m_PlayerController.ResetGame();
         m_CDTimer = 3;

@@ -149,4 +149,14 @@ public class PlayerController : MonoBehaviour
         m_JumpTimer = 0f;
         l_DiedOnce = false;
     }
+
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.tag == "Item")
+        {
+            Debug.Log("Item");
+            ITakeItems l_Item = col.GetComponent<ITakeItems>();
+            l_Item.TakeItem();
+        }
+    }
 }
