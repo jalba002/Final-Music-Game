@@ -22,11 +22,11 @@ public class PlayerGroundCollider : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    /*private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.tag == "Ground")
         {
-            m_PlayerController.SetOnGround(false);
+            m_PlayerController.SetOnGround(true);
         }
-    }
+    }*/
 }

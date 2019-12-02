@@ -13923,10 +13923,10 @@ Transform:
   - {fileID: 88201194}
   - {fileID: 666334006}
   - {fileID: 318471079}
-  - {fileID: 1848858617}
   - {fileID: 96949672}
-  - {fileID: 251427885}
+  - {fileID: 1848858617}
   - {fileID: 1670819766}
+  - {fileID: 251427885}
   m_Father: {fileID: 0}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -89189,7 +89189,7 @@ PrefabInstance:
     - target: {fileID: 9054134367386812297, guid: 994c35fa66347544597811fa4192838a,
         type: 3}
       propertyPath: m_JumpingForce
-      value: 4.4
+      value: 4.1
       objectReference: {fileID: 0}
     - target: {fileID: 9054134367386812297, guid: 994c35fa66347544597811fa4192838a,
         type: 3}
@@ -89258,16 +89258,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9054134366265013182, guid: 994c35fa66347544597811fa4192838a,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9054134366792331714, guid: 994c35fa66347544597811fa4192838a,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 994c35fa66347544597811fa4192838a, type: 3}
